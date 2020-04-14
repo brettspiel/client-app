@@ -1,16 +1,21 @@
 import React from "react";
-import { HashRouter, Switch, Route } from "react-router-dom";
+import { HashRouter, Route, Switch } from "react-router-dom";
 import { paths } from "./paths";
 import { RootMenuPage } from "./features/RootMenuPage";
+import { AppLayout } from "./features/AppLayout";
 
 export const App: React.FunctionComponent = () => (
-  <HashRouter>
-    <Switch>
-      <Route
-        path={paths["/"].routingPath}
-        component={RootMenuPage}
-        exact
-      />
-    </Switch>
-  </HashRouter>
+  <React.StrictMode>
+    <HashRouter>
+      <AppLayout>
+        <Switch>
+          <Route
+            path={paths["/"].routingPath}
+            component={RootMenuPage}
+            exact
+          />
+        </Switch>
+      </AppLayout>
+    </HashRouter>
+  </React.StrictMode>
 );
