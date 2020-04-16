@@ -4,6 +4,16 @@ import * as isDev from "electron-is-dev";
 import installExtension, {
   REACT_DEVELOPER_TOOLS,
 } from "electron-devtools-installer";
+import { ipcMain } from "electron";
+import { v4 as internalV4 } from "internal-ip";
+import { v4 as publicV4 } from "public-ip";
+
+ipcMain.handle("getIp", async () => {
+  return {
+    internalV4: await internalV4(),
+    publicV4: await publicV4()
+  };
+});
 
 let win: BrowserWindow | null = null;
 

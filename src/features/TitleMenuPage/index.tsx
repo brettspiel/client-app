@@ -1,17 +1,23 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styles from "./styles.module.css";
 import { TransparentButton } from "../../components/TransparentButton";
 import when from "when-switch";
 import { TransparentInput } from "../../components/TransparentInput";
+import { ipcRenderer } from "../../ipc";
 
 export const TitleMenuPage: React.FunctionComponent = () => {
   const [status, setStatus] = useState<null | "host" | "client">(null);
+  const handleClickHost = useCallback(async () => {
+    setStatus("host");
+    const ip = await ipcRenderer.invoke("getIp");
+    console.log("@ip", ip);
+  }, []);
   const content = useMemo(
     () =>
       when(status)
         .is(null, () => (
           <>
-            <TransparentButton className={styles.item} onClick={() => setStatus("host")}>
+            <TransparentButton className={styles.item} onClick={handleClickHost}>
               サーバーを起動
             </TransparentButton>
             <TransparentButton className={styles.item} onClick={() => setStatus("client")}>
