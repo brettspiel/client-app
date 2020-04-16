@@ -1,7 +1,7 @@
 import React from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
 import { paths } from "./paths";
-import { RootMenuPage } from "./features/RootMenuPage";
+import { TitleMenuPage } from "./features/TitleMenuPage";
 import { AppLayout } from "./features/AppLayout";
 
 export const App: React.FunctionComponent = () => (
@@ -11,7 +11,7 @@ export const App: React.FunctionComponent = () => (
         <Switch>
           <Route
             path={paths["/"].routingPath}
-            component={RootMenuPage}
+            component={TitleMenuPage}
             exact
           />
         </Switch>
