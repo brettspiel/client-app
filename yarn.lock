@@ -11196,6 +11196,11 @@ whatwg-url@^7.0.0:
     tr46 "^1.0.1"
     webidl-conversions "^4.0.2"
 
+when-switch@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/when-switch/-/when-switch-0.3.1.tgz#8066da007cafafb4e839a19c3088a1ccffdbd851"
+  integrity sha1-gGbaAHyvr7ToOaGcMIihzP/b2FE=
+
 which-module@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/which-module/-/which-module-2.0.0.tgz#d9ef07dce77b9902b8a3a8fa4b31c3e3f7e6e87a"

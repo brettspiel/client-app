@@ -6,21 +6,21 @@ body {
   font-size: 1.6rem;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-  "Ubuntu", "Cantarell", "Noto Sans", "Helvetica Neue", "Helvetica",
-  "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+    "Ubuntu", "Cantarell", "Noto Sans", "Helvetica Neue", "Helvetica",
+    "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-  monospace;
+    monospace;
 }
 
 :root {
-  --primary-green: #06A77D;
-  --primary-blue: #04395E;
-  --primary-pink: #E420A4;
-  --primary-yellow: #D5C67A;
-  --primary-orange: #F1A208;
+  --primary-green: #06a77d;
+  --primary-blue: #04395e;
+  --primary-pink: #e420a4;
+  --primary-yellow: #d5c67a;
+  --primary-orange: #f1a208;
 
   --border-color: #dfdfdf;
 }
