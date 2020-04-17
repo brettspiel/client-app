@@ -10,7 +10,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "format": "prettier --write .",
+    "format": "prettier --write . --ignore-path .gitignore",
     "postinstall": "electron-builder install-app-deps",
     "electron:dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && tsc -p electron -w\" \"wait-on http://localhost:3000 && tsc -p electron && electron .\"",
     "electron:windev": "concurrently \"SET BROWSER=none && yarn start\" \"wait-on http://localhost:3000 && tsc -p electron -w\" \"wait-on http://localhost:3000 && tsc -p electron && electron .\"",
@@ -18,19 +18,24 @@
   },
   "dependencies": {
     "@types/classnames": "^2.2.10",
+    "@types/cors": "^2.8.6",
     "@types/electron-devtools-installer": "^2.2.0",
+    "@types/express": "^4.17.6",
     "@types/internal-ip": "^4.1.0",
     "@types/jest": "25.1.2",
-    "@types/node": "13.7.1",
+    "@types/node": "12.12.35",
     "@types/public-ip": "^3.1.0",
     "@types/react": "16.9.19",
     "@types/react-dom": "16.9.5",
     "@types/react-router-dom": "^5.1.4",
     "classnames": "^2.2.6",
+    "cors": "^2.8.5",
     "electron-devtools-installer": "^2.2.4",
     "electron-is-dev": "^1.1.0",
     "electron-reload": "^1.5.0",
+    "express": "^4.17.1",
     "internal-ip": "^6.0.0",
+    "peerjs": "^1.2.0",
     "public-ip": "^4.0.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
@@ -69,5 +74,8 @@
     "electron-builder": "^22.3.2",
     "prettier": "^2.0.4",
     "wait-on": "^4.0.0"
+  },
+  "resolutions": {
+    "@types/node": "12.12.35"
   }
 }
