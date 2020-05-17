@@ -1,26 +1,41 @@
 import { User } from "../types/User";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { UsersApi } from "../api/UsersApi";
+import { UserCreateRequest } from "../types/UserCreateRequest";
+import { ReduxState } from "../store";
 
 export type UserState = {
-  users: User[];
+  self?: User;
 };
 
-const initialState: UserState = {
-  users: [],
-};
+const initialState: UserState = {};
 
 const slice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    join: (state, action: PayloadAction<User>) => {
-      state.users.push(action.payload);
-    },
-    leave: (state, action: PayloadAction<User>) => {
-      state.users = state.users.filter((u) => u.id !== action.payload.id);
+    addSelf: (state, action: PayloadAction<User>) => {
+      state.self = action.payload;
     },
   },
 });
 
-export const { join, leave } = slice.actions;
+export const createUser = createAsyncThunk(
+  "user/createUser",
+  (name: string, thunkApi) => {
+    const internalV4 = (thunkApi.getState() as ReduxState).server.internalV4;
+    if (!internalV4) throw new Error("internalV4 not found");
+    const req = UserCreateRequest.decode({ name });
+    if (req.isLeft()) throw new Error(JSON.stringify(req));
+
+    return new UsersApi(`http://${internalV4}:9000`)
+      .create(req.unsafeCoerce())
+      .promise()
+      .then((result) => result.unsafeCoerce())
+      .then((user) => {
+        thunkApi.dispatch(slice.actions.addSelf(user));
+      });
+  }
+);
+
 export const user = slice.reducer;
