@@ -6,14 +6,18 @@ import { ipcRenderer } from "../../ipc";
 import { ClientSetting } from "./ClientSetting";
 import { useHistory } from "react-router-dom";
 import { paths } from "../../paths";
+import { register } from "../../modules/server";
+import { useDispatch } from "react-redux";
 
 export const TitleMenuPage: React.FunctionComponent = () => {
   const history = useHistory();
   const [status, setStatus] = useState<null | "client">(null);
+  const dispatch = useDispatch();
   const handleClickHost = useCallback(async () => {
-    console.log(await ipcRenderer.invoke("launchServer"));
+    const serverUrl = await ipcRenderer.invoke("launchServer");
+    dispatch(register(serverUrl));
     history.push(paths["/lounge"].routingPath);
-  }, [history]);
+  }, [dispatch, history]);
 
   const content = useMemo(
     () =>

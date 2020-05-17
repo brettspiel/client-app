@@ -9,11 +9,18 @@ import { v4 as publicV4 } from "public-ip";
 import { launch, stopServer } from "./server";
 
 ipcMain.handle("launchServer", async () => {
-  await launch(9000, "0.0.0.0");
-  return {
-    internalV4: await internalV4(),
-    publicV4: await publicV4(),
-  };
+  try {
+    await launch(9000, "0.0.0.0");
+    return {
+      internalV4: await internalV4(),
+      publicV4: await publicV4(),
+    };
+  } catch {
+    return {
+      internalV4: await internalV4(),
+      publicV4: await publicV4(),
+    };
+  }
 });
 
 ipcMain.handle("stopServer", async () => {
