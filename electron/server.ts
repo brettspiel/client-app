@@ -38,9 +38,9 @@ app.post("/users", (req, res) => {
 
 let server: Server | null = null;
 
-export const launch = (port: number, host: string) =>
+export const launch = (port: number) =>
   new Promise((resolve) => {
-    const s = app.listen(port, host, () => {
+    const s = app.listen(port, () => {
       server = s;
       resolve();
     });

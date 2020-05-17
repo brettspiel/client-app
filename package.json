@@ -40,6 +40,7 @@
     "express": "^4.17.1",
     "extensible-custom-error": "^0.0.7",
     "internal-ip": "^6.0.0",
+    "ngrok": "^3.2.7",
     "peerjs": "^1.2.0",
     "public-ip": "^4.0.1",
     "purify-ts": "^0.15.1",

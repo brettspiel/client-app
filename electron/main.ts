@@ -4,34 +4,20 @@ import * as isDev from "electron-is-dev";
 import installExtension, {
   REACT_DEVELOPER_TOOLS,
 } from "electron-devtools-installer";
-import { v4 as internalV4 } from "internal-ip";
-import { v4 as publicV4 } from "public-ip";
 import { launch, stopServer } from "./server";
+import ngrok from "ngrok";
 
 ipcMain.handle("launchServer", async () => {
   try {
-    await launch(9000, "0.0.0.0");
-    return {
-      internalV4: await internalV4(),
-      publicV4: await publicV4(),
-    };
-  } catch {
-    return {
-      internalV4: await internalV4(),
-      publicV4: await publicV4(),
-    };
-  }
+    await launch(9000);
+  } catch {}
+
+  return await ngrok.connect(9000);
 });
 
 ipcMain.handle("stopServer", async () => {
   stopServer();
-});
-
-ipcMain.handle("getIp", async () => {
-  return {
-    internalV4: await internalV4(),
-    publicV4: await publicV4(),
-  };
+  ngrok.disconnect();
 });
 
 let win: BrowserWindow | null = null;

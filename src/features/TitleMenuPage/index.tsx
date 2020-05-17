@@ -6,7 +6,7 @@ import { ipcRenderer } from "../../ipc";
 import { ClientSetting } from "./ClientSetting";
 import { useHistory } from "react-router-dom";
 import { paths } from "../../paths";
-import { register } from "../../modules/server";
+import { registerUrl } from "../../modules/server";
 import { useDispatch } from "react-redux";
 
 export const TitleMenuPage: React.FunctionComponent = () => {
@@ -15,7 +15,7 @@ export const TitleMenuPage: React.FunctionComponent = () => {
   const dispatch = useDispatch();
   const handleClickHost = useCallback(async () => {
     const serverUrl = await ipcRenderer.invoke("launchServer");
-    dispatch(register(serverUrl));
+    dispatch(registerUrl(serverUrl));
     history.push(paths["/lounge"].routingPath);
   }, [dispatch, history]);
 
