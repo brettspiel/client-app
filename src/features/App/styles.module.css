@@ -6,10 +6,6 @@
   display: flex;
   flex-direction: column;
 
-  background: linear-gradient(
-    120deg,
-    var(--primary-blue) 0%,
-    var(--primary-green) 70%,
-    var(--primary-orange) 100%
-  );
+  color: #202020;
+  background: #f7f7f7;
 }

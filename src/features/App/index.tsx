@@ -8,24 +8,18 @@ import { store } from "../../store";
 import styles from "./styles.module.css";
 
 export const App: React.FunctionComponent = () => (
-  <React.StrictMode>
-    <Provider store={store}>
-      <HashRouter>
-        <div className={styles.app}>
-          <Switch>
-            <Route
-              path={paths["/"].routingPath}
-              component={TitleMenuPage}
-              exact
-            />
-            <Route
-              path={paths["/lounge"].routingPath}
-              component={Lounge}
-              exact
-            />
-          </Switch>
-        </div>
-      </HashRouter>
-    </Provider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <HashRouter>
+      <div className={styles.app}>
+        <Switch>
+          <Route
+            path={paths["/"].routingPath}
+            component={TitleMenuPage}
+            exact
+          />
+          <Route path={paths["/lounge"].routingPath} component={Lounge} exact />
+        </Switch>
+      </div>
+    </HashRouter>
+  </Provider>
 );

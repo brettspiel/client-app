@@ -12,7 +12,10 @@ ipcMain.handle("launchServer", async () => {
     await launch(9000);
   } catch {}
 
-  return await ngrok.connect(9000);
+  const serverUrl = await ngrok.connect(9000);
+  const serverId = new URL(serverUrl).host.split(".")[0];
+  console.log("@serverId", JSON.parse(JSON.stringify(serverId)));
+  return serverId;
 });
 
 ipcMain.handle("stopServer", async () => {

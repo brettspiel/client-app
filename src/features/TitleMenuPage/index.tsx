@@ -1,50 +1,42 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import styles from "./styles.module.css";
-import { TransparentButton } from "../../components/TransparentButton";
-import when from "when-switch";
+import { useReduxState } from "../../hooks/useReduxState";
+import { Button } from "semantic-ui-react";
 import { ipcRenderer } from "../../ipc";
-import { ClientSetting } from "./ClientSetting";
+import { useDispatch } from "react-redux";
+import { registerId } from "../../modules/server";
 import { useHistory } from "react-router-dom";
 import { paths } from "../../paths";
-import { registerUrl } from "../../modules/server";
-import { useDispatch } from "react-redux";
+import { ClientSetting } from "./ClientSetting";
+import { useServerConnection } from "../../hooks/useServerConnection";
 
 export const TitleMenuPage: React.FunctionComponent = () => {
-  const history = useHistory();
-  const [status, setStatus] = useState<null | "client">(null);
   const dispatch = useDispatch();
-  const handleClickHost = useCallback(async () => {
-    const serverUrl = await ipcRenderer.invoke("launchServer");
-    dispatch(registerUrl(serverUrl));
-    history.push(paths["/lounge"].routingPath);
-  }, [dispatch, history]);
+  const history = useHistory();
+  const { serverId, connect, disconnect } = useServerConnection();
+  const [isClient, setIsClient] = useState(false);
 
-  const content = useMemo(
-    () =>
-      when(status)
-        .is(null, () => (
-          <>
-            <TransparentButton
-              className={styles.item}
-              onClick={handleClickHost}
-            >
-              サーバーを起動
-            </TransparentButton>
-            <TransparentButton
-              className={styles.item}
-              onClick={() => setStatus("client")}
-            >
-              サーバーに接続
-            </TransparentButton>
-          </>
-        ))
-        .is("client", () => <ClientSetting onCancel={() => setStatus(null)} />),
-    [handleClickHost, status]
-  ).else(null);
+  const handleClickLaunchServer = useCallback(async () => {
+    const serverId = await connect();
+    dispatch(registerId(serverId));
+    history.push(paths["/lounge"].routingPath);
+  }, [connect, dispatch, history]);
+  const handleClickStopServer = useCallback(disconnect, []);
 
   return (
     <div className={styles.container}>
-      <div className={styles.box}>{content}</div>
+      <div className={styles.box}>
+        {isClient && <ClientSetting onCancel={() => setIsClient(false)} />}
+        {!isClient && serverId == null && (
+          <div>
+            <Button onClick={handleClickLaunchServer}>サーバーを起動</Button>
+            <Button onClick={() => setIsClient(true)}>サーバーに接続</Button>
+          </div>
+        )}
+        <Button negative onClick={handleClickStopServer}>
+          サーバーを停止
+        </Button>
+      </div>
     </div>
   );
 };

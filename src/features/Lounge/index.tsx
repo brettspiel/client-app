@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { createUser } from "../../modules/user";
 
 export const Lounge: React.FunctionComponent = () => {
-  const serverUrl = useReduxState((state) => state.server.url);
+  const serverId = useReduxState((state) => state.server.serverId);
   const history = useHistory();
   const [userName, setUserName] = useState("");
   const dispatch = useDispatch();
@@ -19,14 +19,13 @@ export const Lounge: React.FunctionComponent = () => {
     dispatch(createUser(userName));
   }, [dispatch, userName]);
 
-  if (!serverUrl) {
+  if (serverId == null) {
     history.push(paths["/"].routingPath);
   }
 
   return (
     <div className={styles.lounge}>
-      <h1>ラウンジ</h1>
-      <div>{serverUrl}</div>
+      <h1>サーバーID: {serverId}</h1>
       <div>{JSON.stringify(user)}</div>
 
       <TransparentInput
