@@ -1,12 +1,7 @@
 .container {
   height: 100%;
   color: white;
-  background: linear-gradient(
-    120deg,
-    var(--primary-blue) 0%,
-    var(--primary-green) 70%,
-    var(--primary-orange) 100%
-  );
+
   display: flex;
   flex-direction: column;
   justify-content: center;

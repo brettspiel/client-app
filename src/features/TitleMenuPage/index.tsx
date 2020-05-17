@@ -3,15 +3,17 @@ import styles from "./styles.module.css";
 import { TransparentButton } from "../../components/TransparentButton";
 import when from "when-switch";
 import { ipcRenderer } from "../../ipc";
-import { HostSetting } from "./HostSetting";
 import { ClientSetting } from "./ClientSetting";
+import { useHistory } from "react-router-dom";
+import { paths } from "../../paths";
 
 export const TitleMenuPage: React.FunctionComponent = () => {
-  const [status, setStatus] = useState<null | "host" | "client">(null);
+  const history = useHistory();
+  const [status, setStatus] = useState<null | "client">(null);
   const handleClickHost = useCallback(async () => {
-    await ipcRenderer.invoke("launchServer");
-    setStatus("host");
-  }, []);
+    console.log(await ipcRenderer.invoke("launchServer"));
+    history.push(paths["/lounge"].routingPath);
+  }, [history]);
 
   const content = useMemo(
     () =>
@@ -32,7 +34,6 @@ export const TitleMenuPage: React.FunctionComponent = () => {
             </TransparentButton>
           </>
         ))
-        .is("host", () => <HostSetting onCancel={() => setStatus(null)} />)
         .is("client", () => <ClientSetting onCancel={() => setStatus(null)} />),
     [handleClickHost, status]
   ).else(null);
