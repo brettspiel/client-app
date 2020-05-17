@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from "react";
-import { ipcRenderer } from "../../ipc";
 import { Button, Input } from "semantic-ui-react";
-import { useServerAddress } from "../../hooks/userServerAddress";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { registerId } from "../../modules/server";
 import { paths } from "../../paths";
+import { healthcheck } from "../../api/healthcheck";
+import { useServerConnection } from "../../hooks/useServerConnection";
+import { getServerAddress } from "../../utils/serverAddress";
 
 export type Props = {
   onCancel: () => any;
@@ -15,15 +16,23 @@ export const ClientSetting: React.FunctionComponent<Props> = ({ onCancel }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [serverId, setServerId] = useState("");
-  const serverAddress = useServerAddress(serverId);
+  const serverAddress = getServerAddress(serverId);
+  const { disconnect } = useServerConnection();
+
   const handleClickClient = useCallback(async () => {
-    fetch(`${serverAddress}/__healthcheck`).then((res) => {
-      if (res.status === 200) {
-        dispatch(registerId(serverId));
-        history.push(paths["/lounge"].routingPath);
-      }
-    });
+    const ok = await healthcheck(serverAddress!);
+    if (ok) {
+      dispatch(registerId(serverId));
+      history.push(paths["/lounge"].routingPath);
+    }
   }, [dispatch, history, serverAddress, serverId]);
+  const handleClickCancel = useCallback(async () => {
+    try {
+      await disconnect();
+    } finally {
+      onCancel();
+    }
+  }, [disconnect, onCancel]);
 
   return (
     <>
@@ -35,14 +44,7 @@ export const ClientSetting: React.FunctionComponent<Props> = ({ onCancel }) => {
         onChange={(event) => setServerId(event.target.value)}
       />
       <Button onClick={handleClickClient}>接続</Button>
-      <Button
-        onClick={() => {
-          ipcRenderer.invoke("stopServer");
-          onCancel();
-        }}
-      >
-        キャンセル
-      </Button>
+      <Button onClick={handleClickCancel}>キャンセル</Button>
     </>
   );
 };
