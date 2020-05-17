@@ -1,17 +1,17 @@
 import React from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
-import { paths } from "./paths";
-import { TitleMenuPage } from "./features/TitleMenuPage";
-import { AppLayout } from "./features/AppLayout";
-import { Lounge } from "./features/Lounge";
+import { paths } from "../../paths";
+import { TitleMenuPage } from "../TitleMenuPage";
+import { Lounge } from "../Lounge";
 import { Provider } from "react-redux";
-import { store } from "./store";
+import { store } from "../../store";
+import styles from "./styles.module.css";
 
 export const App: React.FunctionComponent = () => (
   <React.StrictMode>
     <Provider store={store}>
       <HashRouter>
-        <AppLayout>
+        <div className={styles.app}>
           <Switch>
             <Route
               path={paths["/"].routingPath}
@@ -24,7 +24,7 @@ export const App: React.FunctionComponent = () => (
               exact
             />
           </Switch>
-        </AppLayout>
+        </div>
       </HashRouter>
     </Provider>
   </React.StrictMode>
