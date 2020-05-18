@@ -9,6 +9,7 @@ import { Button, Input } from "semantic-ui-react";
 import { EventsApi } from "../../api/EventsApi";
 import { useServerConnection } from "../../hooks/useServerConnection";
 import { User } from "../../types/User";
+import { ChatApi } from "../../api/ChatApi";
 
 export const Lounge: React.FunctionComponent = () => {
   const serverId = useReduxState((state) => state.server.serverId);
@@ -19,6 +20,15 @@ export const Lounge: React.FunctionComponent = () => {
   const { serverAddress } = useServerConnection();
   const [users, setUsers] = useState<User[]>([]);
   const events = useRef<EventsApi>();
+  const chatApi = useRef<ChatApi>();
+  const [chatLogs, setChatLogs] = useState<string[]>([]);
+  const [chatText, setChatText] = useState("");
+
+  useEffect(() => {
+    if (serverAddress) {
+      chatApi.current = new ChatApi(serverAddress);
+    }
+  }, [serverAddress]);
 
   useEffect(() => {
     if (user && !users.find((u) => u.id === user.id)) {
@@ -36,13 +46,19 @@ export const Lounge: React.FunctionComponent = () => {
     if (events.current && !events.current.isConnecting()) {
       if (user) {
         events.current.connect(user.id, (event) => {
-          setUsers(users.concat([JSON.parse(event.data)]));
+          const data = JSON.parse(event.data);
+          if (data.type === "user") {
+            setUsers(users.concat([data.user]));
+          }
+          if (data.type === "chat") {
+            setChatLogs(chatLogs.concat([data.text]));
+          }
         });
       } else {
         events.current.disconnect();
       }
     }
-  }, [user, users]);
+  }, [chatLogs, user, users]);
 
   const handleClickLogin = useCallback(async () => {
     dispatch(createUser(userName));
@@ -58,6 +74,22 @@ export const Lounge: React.FunctionComponent = () => {
       {users.map((user) => (
         <div key={user.id}>{user.name}</div>
       ))}
+      {chatLogs.map((log) => (
+        <div key={Math.random()}>{log}</div>
+      ))}
+      <Input
+        placeholder="チャット"
+        value={chatText}
+        onChange={(event) => setChatText(event.target.value)}
+      />
+      <Button
+        onClick={() => {
+          chatApi.current && chatApi.current.send(chatText);
+          setChatText("");
+        }}
+      >
+        送信
+      </Button>
       {!user && (
         <div>
           <Input

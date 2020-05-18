@@ -21,6 +21,8 @@ const users: {
   };
 } = {};
 
+const chatLogs: string[] = [];
+
 app.post("/users", (req, res) => {
   EitherAsync<string, User>(async ({ liftEither }) => {
     const body = await liftEither(UserCreateRequest.decode(req.body));
@@ -38,7 +40,7 @@ app.post("/users", (req, res) => {
           res.send(user).end();
           Object.values(users).forEach(({ res }) => {
             if (res) {
-              res.write(`data: ${JSON.stringify(user)}\n\n`);
+              res.write(`data: ${{ type: "user", user }}\n\n`);
             }
           });
         }
@@ -46,9 +48,18 @@ app.post("/users", (req, res) => {
     );
 });
 
+app.post("/chat", (req, res) => {
+  const text: string = req.body.text;
+  chatLogs.push(text);
+  Object.values(users).forEach(({ res }) => {
+    res && res.write(`data: ${JSON.stringify({ type: "chat", text })}\n\n`);
+  });
+  res.sendStatus(200).end();
+});
+
 app.get("/events/:userId", (req, res) => {
   const userId = req.params.userId;
-  req.socket.setTimeout(Number.MAX_VALUE);
+  req.socket.setTimeout(2147483647);
   res.writeHead(200, {
     // text/event-stream を追加
     "Content-Type": "text/event-stream",
