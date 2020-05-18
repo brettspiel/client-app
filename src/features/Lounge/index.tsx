@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useReduxState } from "../../hooks/useReduxState";
 import styles from "./styles.module.css";
 import { useHistory } from "react-router-dom";
@@ -19,7 +25,10 @@ export const Lounge: React.FunctionComponent = () => {
   const user = useReduxState((state) => state.user.self);
   const { serverAddress } = useServerConnection();
   const [users, setUsers] = useState<User[]>([]);
-  const events = useRef<EventsApi>();
+  const events = useMemo(
+    () => (serverAddress != null ? new EventsApi(serverAddress) : undefined),
+    [serverAddress]
+  );
   const chatApi = useRef<ChatApi>();
   const [chatLogs, setChatLogs] = useState<string[]>([]);
   const [chatText, setChatText] = useState("");
@@ -37,28 +46,22 @@ export const Lounge: React.FunctionComponent = () => {
   }, [user, users]);
 
   useEffect(() => {
-    if (serverAddress) {
-      events.current = new EventsApi(serverAddress);
+    if (events && user) {
+      events.connect(user.id, (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === "user") {
+          setUsers(users.concat([data.user]));
+        }
+        if (data.type === "chat") {
+          setChatLogs(chatLogs.concat([data.text]));
+        }
+      });
     }
-  }, [serverAddress]);
 
-  useEffect(() => {
-    if (events.current && !events.current.isConnecting()) {
-      if (user) {
-        events.current.connect(user.id, (event) => {
-          const data = JSON.parse(event.data);
-          if (data.type === "user") {
-            setUsers(users.concat([data.user]));
-          }
-          if (data.type === "chat") {
-            setChatLogs(chatLogs.concat([data.text]));
-          }
-        });
-      } else {
-        events.current.disconnect();
-      }
-    }
-  }, [chatLogs, user, users]);
+    return () => {
+      events && events.disconnect();
+    };
+  }, [chatLogs, events, user, users]);
 
   const handleClickLogin = useCallback(async () => {
     dispatch(createUser(userName));
