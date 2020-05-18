@@ -13,14 +13,12 @@ ipcMain.handle("launchServer", async () => {
   } catch {}
 
   const serverUrl = await ngrok.connect(9000);
-  const serverId = new URL(serverUrl).host.split(".")[0];
-  console.log("@serverId", JSON.parse(JSON.stringify(serverId)));
-  return serverId;
+  return new URL(serverUrl).host.split(".")[0];
 });
 
 ipcMain.handle("stopServer", async () => {
   stopServer();
-  ngrok.disconnect();
+  await ngrok.disconnect();
 });
 
 let win: BrowserWindow | null = null;
