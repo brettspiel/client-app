@@ -83,9 +83,12 @@ export const launch = (port: number) =>
     });
   });
 
-export const stopServer = () => {
-  server &&
-    server.close(() => {
-      server = null;
-    });
-};
+export const stopServer = () =>
+  new Promise((resolve) => {
+    server
+      ? server.close(() => {
+          server = null;
+          resolve();
+        })
+      : resolve();
+  });

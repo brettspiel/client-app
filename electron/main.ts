@@ -17,7 +17,7 @@ ipcMain.handle("launchServer", async () => {
 });
 
 ipcMain.handle("stopServer", async () => {
-  stopServer();
+  await stopServer();
   await ngrok.disconnect();
 });
 
