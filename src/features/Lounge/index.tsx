@@ -45,23 +45,26 @@ export const Lounge: React.FunctionComponent = () => {
     }
   }, [user, users]);
 
+  const handleServerSentEvent = useCallback(
+    (event: MessageEvent) => {
+      const data = JSON.parse(event.data);
+      if (data.type === "user") {
+        setUsers(users.concat([data.user]));
+      }
+      if (data.type === "chat") {
+        setChatLogs(chatLogs.concat([data.text]));
+      }
+    },
+    [chatLogs, users]
+  );
+
   useEffect(() => {
-    if (events && user) {
-      events.connect(user.id, (event) => {
-        const data = JSON.parse(event.data);
-        if (data.type === "user") {
-          setUsers(users.concat([data.user]));
-        }
-        if (data.type === "chat") {
-          setChatLogs(chatLogs.concat([data.text]));
-        }
-      });
+    if (user) {
+      events?.connect(user.id, handleServerSentEvent);
     }
 
-    return () => {
-      events && events.disconnect();
-    };
-  }, [chatLogs, events, user, users]);
+    return () => events?.disconnect();
+  }, [events, handleServerSentEvent, user]);
 
   const handleClickLogin = useCallback(async () => {
     dispatch(createUser(userName));

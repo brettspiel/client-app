@@ -3,8 +3,6 @@ export class EventsApi {
   private onEvent?: (event: MessageEvent) => void;
   constructor(private serverAddress: string) {}
 
-  isConnecting = (): boolean => !!this.source && !!this.onEvent;
-
   connect = (userId: string, onEvent: (event: MessageEvent) => void) => {
     this.onEvent = onEvent;
     this.source = new EventSource(`${this.serverAddress}/events/${userId}`);
