@@ -4,7 +4,6 @@ import { UsersApi } from "../api/UsersApi";
 import { UserCreateRequest } from "../types/UserCreateRequest";
 import { ReduxState } from "../store";
 import { getServerAddress } from "../utils/serverAddress";
-import { EventsApi } from "../api/EventsApi";
 
 export type UserState = {
   self?: User;

@@ -1,8 +1,6 @@
 import React, { useCallback, useState } from "react";
 import styles from "./styles.module.css";
-import { useReduxState } from "../../hooks/useReduxState";
 import { Button } from "semantic-ui-react";
-import { ipcRenderer } from "../../ipc";
 import { useDispatch } from "react-redux";
 import { registerId } from "../../modules/server";
 import { useHistory } from "react-router-dom";
