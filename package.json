@@ -30,6 +30,8 @@
     "@types/react-dom": "16.9.5",
     "@types/react-redux": "^7.1.8",
     "@types/react-router-dom": "^5.1.4",
+    "@types/socket.io": "^2.1.6",
+    "@types/socket.io-client": "^1.4.33",
     "@types/uuid": "^7.0.3",
     "abort-controller": "^3.0.0",
     "classnames": "^2.2.6",
@@ -52,6 +54,8 @@
     "redux": "^4.0.5",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.2",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0",
     "typescript": "3.7.5",
     "uuid": "^8.0.0",
     "when-switch": "^0.3.1"

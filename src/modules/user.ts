@@ -1,7 +1,7 @@
-import { User } from "../types/User";
+import { User } from "../types/domain/User";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UsersApi } from "../api/UsersApi";
-import { UserCreateRequest } from "../types/UserCreateRequest";
+import { UserCreateRequest } from "../types/io/UserCreateRequest";
 import { ReduxState } from "../store";
 import { getServerAddress } from "../utils/serverAddress";
 

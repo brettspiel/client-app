@@ -1,7 +1,7 @@
 import { createClient, decodeResult } from "../api-client";
 import AbortControllerOriginal from "abort-controller";
-import { User } from "../types/User";
-import { UserCreateRequest } from "../types/UserCreateRequest";
+import { User } from "../types/domain/User";
+import { UserCreateRequest } from "../types/io/UserCreateRequest";
 import { unknown } from "purify-ts";
 
 export class UsersApi {

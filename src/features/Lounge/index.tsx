@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useReduxState } from "../../hooks/useReduxState";
 import styles from "./styles.module.css";
 import { useHistory } from "react-router-dom";
@@ -12,10 +6,9 @@ import { paths } from "../../paths";
 import { useDispatch } from "react-redux";
 import { createUser } from "../../modules/user";
 import { Button, Input } from "semantic-ui-react";
-import { EventsApi } from "../../api/EventsApi";
 import { useServerConnection } from "../../hooks/useServerConnection";
-import { User } from "../../types/User";
-import { ChatApi } from "../../api/ChatApi";
+import { User } from "../../types/domain/User";
+import { useSocket } from "../../hooks/useSocket";
 
 export const Lounge: React.FunctionComponent = () => {
   const serverId = useReduxState((state) => state.server.serverId);
@@ -25,19 +18,10 @@ export const Lounge: React.FunctionComponent = () => {
   const user = useReduxState((state) => state.user.self);
   const { serverAddress } = useServerConnection();
   const [users, setUsers] = useState<User[]>([]);
-  const events = useMemo(
-    () => (serverAddress != null ? new EventsApi(serverAddress) : undefined),
-    [serverAddress]
-  );
-  const chatApi = useRef<ChatApi>();
-  const [chatLogs, setChatLogs] = useState<string[]>([]);
-  const [chatText, setChatText] = useState("");
 
-  useEffect(() => {
-    if (serverAddress) {
-      chatApi.current = new ChatApi(serverAddress);
-    }
-  }, [serverAddress]);
+  const [chatLogs, setChatLogs] = useState<string[]>([]);
+  const [chatMessage, setChatMessage] = useState("");
+  const { connect, disconnect, emit } = useSocket();
 
   useEffect(() => {
     if (user && !users.find((u) => u.id === user.id)) {
@@ -45,26 +29,13 @@ export const Lounge: React.FunctionComponent = () => {
     }
   }, [user, users]);
 
-  const handleServerSentEvent = useCallback(
-    (event: MessageEvent) => {
-      const data = JSON.parse(event.data);
-      if (data.type === "user") {
-        setUsers(users.concat([data.user]));
-      }
-      if (data.type === "chat") {
-        setChatLogs(chatLogs.concat([data.text]));
-      }
-    },
-    [chatLogs, users]
-  );
-
   useEffect(() => {
-    if (user) {
-      events?.connect(user.id, handleServerSentEvent);
+    if (serverAddress) {
+      connect(serverAddress);
     }
 
-    return () => events?.disconnect();
-  }, [events, handleServerSentEvent, user]);
+    return () => disconnect();
+  }, [connect, disconnect, serverAddress]);
 
   const handleClickLogin = useCallback(async () => {
     dispatch(createUser(userName));
@@ -85,13 +56,15 @@ export const Lounge: React.FunctionComponent = () => {
       ))}
       <Input
         placeholder="チャット"
-        value={chatText}
-        onChange={(event) => setChatText(event.target.value)}
+        value={chatMessage}
+        onChange={(event) => setChatMessage(event.target.value)}
       />
       <Button
         onClick={() => {
-          chatApi.current && chatApi.current.send(chatText);
-          setChatText("");
+          if (user) {
+            emit("client/lounge/chatSend", { user, message: chatMessage });
+            setChatMessage("");
+          }
         }}
       >
         送信

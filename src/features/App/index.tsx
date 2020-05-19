@@ -6,20 +6,27 @@ import { Lounge } from "../Lounge";
 import { Provider } from "react-redux";
 import { store } from "../../store";
 import styles from "./styles.module.css";
+import { SocketProvider } from "../../hooks/useSocket";
 
 export const App: React.FunctionComponent = () => (
   <Provider store={store}>
-    <HashRouter>
-      <div className={styles.app}>
-        <Switch>
-          <Route
-            path={paths["/"].routingPath}
-            component={TitleMenuPage}
-            exact
-          />
-          <Route path={paths["/lounge"].routingPath} component={Lounge} exact />
-        </Switch>
-      </div>
-    </HashRouter>
+    <SocketProvider>
+      <HashRouter>
+        <div className={styles.app}>
+          <Switch>
+            <Route
+              path={paths["/"].routingPath}
+              component={TitleMenuPage}
+              exact
+            />
+            <Route
+              path={paths["/lounge"].routingPath}
+              component={Lounge}
+              exact
+            />
+          </Switch>
+        </div>
+      </HashRouter>
+    </SocketProvider>
   </Provider>
 );
