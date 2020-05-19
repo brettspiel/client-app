@@ -12,28 +12,30 @@ export const SocketProvider: React.FunctionComponent = ({ children }) => {
 };
 
 export const useSocket = () => {
-  const socketContextValue = useContext(SocketContext);
+  const ctx = useContext(SocketContext);
+
+  const isConnected = !!ctx.socket?.connected;
 
   const connect = useCallback(
     (serverAddress: string) => {
-      socketContextValue.socket = io(serverAddress);
+      if (!isConnected) ctx.socket = io(`${serverAddress}/lounge`);
     },
-    [socketContextValue.socket]
+    [isConnected, ctx.socket]
   );
 
   const disconnect = useCallback(() => {
-    if (socketContextValue.socket) {
-      socketContextValue.socket.disconnect();
+    if (ctx.socket) {
+      ctx.socket.disconnect();
     }
-  }, [socketContextValue.socket]);
+  }, [ctx.socket]);
 
   const emit = useCallback(
     <T extends SocketEventType>(type: T, value: SocketEvent[T]) => {
-      if (socketContextValue.socket) {
-        socketContextValue.socket.emit(type, value);
+      if (ctx.socket) {
+        ctx.socket.emit(type, value);
       }
     },
-    [socketContextValue.socket]
+    [ctx.socket]
   );
 
   const subscribe = useCallback(
@@ -41,11 +43,11 @@ export const useSocket = () => {
       type: T,
       subscriber: (value: SocketEvent[T]) => void
     ) => {
-      if (socketContextValue.socket) {
-        socketContextValue.socket.on(type, subscriber);
+      if (ctx.socket) {
+        ctx.socket.on(type, subscriber);
       }
     },
-    [socketContextValue.socket]
+    [ctx.socket]
   );
 
   const unsubscribe = useCallback(
@@ -53,14 +55,15 @@ export const useSocket = () => {
       type: T,
       subscriber: (value: SocketEvent[T]) => void
     ) => {
-      if (socketContextValue.socket) {
-        socketContextValue.socket.off(type, subscriber);
+      if (ctx.socket) {
+        ctx.socket.off(type, subscriber);
       }
     },
-    [socketContextValue.socket]
+    [ctx.socket]
   );
 
   return {
+    isConnected,
     connect,
     disconnect,
     emit,

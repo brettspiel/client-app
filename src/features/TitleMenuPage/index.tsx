@@ -17,7 +17,7 @@ export const TitleMenuPage: React.FunctionComponent = () => {
   const handleClickLaunchServer = useCallback(async () => {
     const serverId = await connect();
     dispatch(registerId(serverId));
-    history.push(paths["/lounge"].routingPath);
+    history.push(paths["/login"].routingPath);
   }, [connect, dispatch, history]);
   const handleClickStopServer = useCallback(disconnect, []);
 

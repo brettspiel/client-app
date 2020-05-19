@@ -1,45 +1,52 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useReduxState } from "../../hooks/useReduxState";
 import styles from "./styles.module.css";
 import { useHistory } from "react-router-dom";
 import { paths } from "../../paths";
-import { useDispatch } from "react-redux";
-import { createUser } from "../../modules/user";
 import { Button, Input } from "semantic-ui-react";
-import { useServerConnection } from "../../hooks/useServerConnection";
-import { User } from "../../types/domain/User";
 import { useSocket } from "../../hooks/useSocket";
+import { ChatLog } from "../../types/domain/ChatLog";
+import { useLoggedInEffect } from "../../hooks/useLoggedInEffect";
+import { useReduxState } from "../../hooks/useReduxState";
+import { useDispatch } from "react-redux";
+import { addLog } from "../../modules/loungeChatLog";
 
 export const Lounge: React.FunctionComponent = () => {
-  const serverId = useReduxState((state) => state.server.serverId);
+  const { self, serverId, serverAddress } = useLoggedInEffect();
   const history = useHistory();
-  const [userName, setUserName] = useState("");
   const dispatch = useDispatch();
-  const user = useReduxState((state) => state.user.self);
-  const { serverAddress } = useServerConnection();
-  const [users, setUsers] = useState<User[]>([]);
-
-  const [chatLogs, setChatLogs] = useState<string[]>([]);
+  const chatLogs = useReduxState((state) => state.loungeChatLog.logs);
   const [chatMessage, setChatMessage] = useState("");
-  const { connect, disconnect, emit } = useSocket();
+  const {
+    isConnected,
+    connect,
+    disconnect,
+    emit,
+    subscribe,
+    unsubscribe,
+  } = useSocket();
 
   useEffect(() => {
-    if (user && !users.find((u) => u.id === user.id)) {
-      setUsers(users.concat([user]));
-    }
-  }, [user, users]);
-
-  useEffect(() => {
-    if (serverAddress) {
+    if (serverAddress && !isConnected) {
       connect(serverAddress);
     }
+  }, [connect, disconnect, isConnected, serverAddress]);
 
+  useEffect(() => {
     return () => disconnect();
-  }, [connect, disconnect, serverAddress]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const handleClickLogin = useCallback(async () => {
-    dispatch(createUser(userName));
-  }, [dispatch, userName]);
+  const chatLogSubscriber = useCallback(
+    (chatLog: ChatLog) => {
+      dispatch(addLog(chatLog));
+    },
+    [dispatch]
+  );
+  useEffect(() => {
+    if (isConnected) subscribe("server/lounge/chatLog", chatLogSubscriber);
+
+    return () => unsubscribe("server/lounge/chatLog", chatLogSubscriber);
+  }, [chatLogSubscriber, isConnected, subscribe, unsubscribe]);
 
   if (serverId == null) {
     history.push(paths["/"].routingPath);
@@ -48,11 +55,9 @@ export const Lounge: React.FunctionComponent = () => {
   return (
     <div className={styles.lounge}>
       <h1>サーバーID: {serverId}</h1>
-      {users.map((user) => (
-        <div key={user.id}>{user.name}</div>
-      ))}
+      <pre>{JSON.stringify(self)}</pre>
       {chatLogs.map((log) => (
-        <div key={Math.random()}>{log}</div>
+        <div key={log.timestamp}>{log.message}</div>
       ))}
       <Input
         placeholder="チャット"
@@ -61,29 +66,17 @@ export const Lounge: React.FunctionComponent = () => {
       />
       <Button
         onClick={() => {
-          if (user) {
-            emit("client/lounge/chatSend", { user, message: chatMessage });
+          if (self) {
+            emit("client/lounge/chatSend", {
+              user: self,
+              message: chatMessage,
+            });
             setChatMessage("");
           }
         }}
       >
         送信
       </Button>
-      {!user && (
-        <div>
-          <Input
-            placeholder="ユーザー名"
-            value={userName}
-            onChange={(event) => setUserName(event.target.value)}
-          />
-          <Button onClick={handleClickLogin}>サーバーにログイン</Button>
-        </div>
-      )}
-      {user && (
-        <div>
-          <div>logged in as {user.name}</div>
-        </div>
-      )}
     </div>
   );
 };

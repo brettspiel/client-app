@@ -1,8 +1,8 @@
 import { createClient, decodeResult } from "../api-client";
 import AbortControllerOriginal from "abort-controller";
-import { User } from "../types/domain/User";
 import { UserCreateRequest } from "../types/io/UserCreateRequest";
 import { unknown } from "purify-ts";
+import { UsersCreateResponse } from "../types/io/UsersCreateResponse";
 
 export class UsersApi {
   private clients: ReturnType<typeof createClient>;
@@ -15,7 +15,7 @@ export class UsersApi {
   }
 
   create = (body: UserCreateRequest) =>
-    decodeResult(this.clients.apiPost("/users", {}, body), User);
+    decodeResult(this.clients.apiPost("/users", {}, body), UsersCreateResponse);
 
   destroy = (id: string) =>
     decodeResult(this.clients.apiDelete(`/users/${id}`), unknown);

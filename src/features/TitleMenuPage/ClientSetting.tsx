@@ -23,7 +23,7 @@ export const ClientSetting: React.FunctionComponent<Props> = ({ onCancel }) => {
     const ok = await healthcheck(serverAddress!);
     if (ok) {
       dispatch(registerId(serverId));
-      history.push(paths["/lounge"].routingPath);
+      history.push(paths["/login"].routingPath);
     }
   }, [dispatch, history, serverAddress, serverId]);
   const handleClickCancel = useCallback(async () => {

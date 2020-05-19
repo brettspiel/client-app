@@ -34,8 +34,8 @@ export const createUser = createAsyncThunk(
       .create(req.unsafeCoerce())
       .promise()
       .then((result) => result.unsafeCoerce())
-      .then((user) => {
-        thunkApi.dispatch(slice.actions.addSelf(user));
+      .then((userResult) => {
+        thunkApi.dispatch(slice.actions.addSelf(userResult.user));
       });
   }
 );

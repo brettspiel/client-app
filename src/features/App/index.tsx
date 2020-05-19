@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import { store } from "../../store";
 import styles from "./styles.module.css";
 import { SocketProvider } from "../../hooks/useSocket";
+import { LoginPage } from "../LoginPage";
 
 export const App: React.FunctionComponent = () => (
   <Provider store={store}>
@@ -17,6 +18,11 @@ export const App: React.FunctionComponent = () => (
             <Route
               path={paths["/"].routingPath}
               component={TitleMenuPage}
+              exact
+            />
+            <Route
+              path={paths["/login"].routingPath}
+              component={LoginPage}
               exact
             />
             <Route
