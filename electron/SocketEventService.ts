@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { SocketEvent, SocketEventType } from "../src/types/SocketEvent";
+import { SocketEvent, SocketEventType } from "../src/types/io/SocketEvent";
 
 export class SocketEventService {
   constructor(private socket: Socket) {}

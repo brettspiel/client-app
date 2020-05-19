@@ -6,6 +6,7 @@ import { SocketEventService } from "./SocketEventService";
 import { healthcheckRoute } from "./controllers/healthcheck";
 import { usersRoute } from "./controllers/users";
 import { ChatLog } from "../src/types/domain/ChatLog";
+import { loungeChatStore } from "./stores/ChatStore";
 
 const app = express();
 const http = httpServer.createServer(app);
@@ -16,11 +17,13 @@ app.use(cors());
 app.use(healthcheckRoute);
 app.use(usersRoute);
 
-const chatLogs: ChatLog[] = [];
-
 io.on("connection", (socket) => {
   const ses = new SocketEventService(socket);
-  ses.subscribe("client/lounge/chatSend", (value) => {});
+  ses.subscribe("client/lounge/chatSend", (value) => {
+    const log = loungeChatStore.insert(value.user, value.message);
+
+    ses.emit("server/lounge/chatLog", log, true);
+  });
 });
 
 let server: Server | null = null;
