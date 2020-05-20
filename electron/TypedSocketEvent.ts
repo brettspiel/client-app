@@ -9,7 +9,11 @@ export class TypedSocketEvent {
     : new TypedSocketEvent(this.socket.broadcast, true);
 
   emit = <T extends SocketEventType>(type: T, value: SocketEvent[T]) => {
-    this.socket.emit(type, value);
+    if (this.broadcast) {
+      this.socket.broadcast.emit(type, value);
+    } else {
+      this.socket.emit(type, value);
+    }
   };
 
   on = <T extends SocketEventType>(
