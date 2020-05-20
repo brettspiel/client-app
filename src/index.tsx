@@ -4,6 +4,9 @@ import "./index.css";
 import { App } from "./features/App";
 import * as serviceWorker from "./serviceWorker";
 import "semantic-ui-css/semantic.min.css";
+import { DEBUG_MODE } from "./constants";
+
+console.log("@DEBUG_MODE", JSON.parse(JSON.stringify(DEBUG_MODE)));
 
 ReactDOM.render(<App />, document.getElementById("root"));
 

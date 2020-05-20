@@ -38,9 +38,10 @@ export const Lounge: React.FunctionComponent = () => {
   return (
     <div className={styles.lounge}>
       <h1>サーバーID: {serverId}</h1>
-      <pre>{JSON.stringify(self)}</pre>
       {chatLogs.map((log) => (
-        <div key={log.timestamp}>{log.message}</div>
+        <div key={log.timestamp}>
+          [{log.user.name}] {log.message}
+        </div>
       ))}
       <Input
         placeholder="チャット"

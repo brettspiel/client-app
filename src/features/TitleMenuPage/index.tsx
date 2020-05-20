@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styles from "./styles.module.css";
 import { Button } from "semantic-ui-react";
 import { useDispatch } from "react-redux";
@@ -7,8 +7,14 @@ import { useHistory } from "react-router-dom";
 import { paths } from "../../paths";
 import { ClientSetting } from "./ClientSetting";
 import { useServerConnection } from "../../hooks/useServerConnection";
+import { TitleMenuPageToLoungePageWorkflow } from "../../debug/TitleMenuPageToLoungePageWorkflow";
 
 export const TitleMenuPage: React.FunctionComponent = () => {
+  useEffect(() => {
+    new TitleMenuPageToLoungePageWorkflow(history).run();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const dispatch = useDispatch();
   const history = useHistory();
   const { serverId, connect, disconnect } = useServerConnection();
