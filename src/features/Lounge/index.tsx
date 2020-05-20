@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "./styles.module.css";
-import { useHistory } from "react-router-dom";
-import { paths } from "../../paths";
 import { Button, Input } from "semantic-ui-react";
 import { useSocket } from "../../hooks/useSocket";
 import { ChatLog } from "../../types/domain/ChatLog";
@@ -12,29 +10,12 @@ import { addLog } from "../../modules/loungeChatLog";
 
 export const Lounge: React.FunctionComponent = () => {
   const { self, serverId, serverAddress } = useLoggedInEffect();
-  const history = useHistory();
   const dispatch = useDispatch();
   const chatLogs = useReduxState((state) => state.loungeChatLog.logs);
   const [chatMessage, setChatMessage] = useState("");
-  const {
-    isConnected,
-    connect,
-    disconnect,
-    emit,
-    subscribe,
-    unsubscribe,
-  } = useSocket();
-
-  useEffect(() => {
-    if (serverAddress && !isConnected) {
-      connect(serverAddress);
-    }
-  }, [connect, disconnect, isConnected, serverAddress]);
-
-  useEffect(() => {
-    return () => disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { connect, disconnect, emit, subscribe, unsubscribe } = useSocket(
+    serverAddress
+  );
 
   const chatLogSubscriber = useCallback(
     (chatLog: ChatLog) => {
@@ -43,14 +24,15 @@ export const Lounge: React.FunctionComponent = () => {
     [dispatch]
   );
   useEffect(() => {
-    if (isConnected) subscribe("server/lounge/chatLog", chatLogSubscriber);
+    connect();
+    subscribe("server/lounge/chatLog", chatLogSubscriber);
 
-    return () => unsubscribe("server/lounge/chatLog", chatLogSubscriber);
-  }, [chatLogSubscriber, isConnected, subscribe, unsubscribe]);
-
-  if (serverId == null) {
-    history.push(paths["/"].routingPath);
-  }
+    return () => {
+      unsubscribe("server/lounge/chatLog", chatLogSubscriber);
+      disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className={styles.lounge}>

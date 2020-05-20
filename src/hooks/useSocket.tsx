@@ -11,17 +11,19 @@ export const SocketProvider: React.FunctionComponent = ({ children }) => {
   return <SocketContext.Provider value={{}}>{children}</SocketContext.Provider>;
 };
 
-export const useSocket = () => {
+export const useSocket = (serverAddress: string, namespace?: string) => {
   const ctx = useContext(SocketContext);
 
   const isConnected = !!ctx.socket?.connected;
 
-  const connect = useCallback(
-    (serverAddress: string) => {
-      if (!isConnected) ctx.socket = io(`${serverAddress}/lounge`);
-    },
-    [isConnected, ctx.socket]
-  );
+  const connect = useCallback(() => {
+    if (!isConnected) {
+      const address = namespace
+        ? `${serverAddress}/${namespace}`
+        : serverAddress;
+      ctx.socket = io(address);
+    }
+  }, [isConnected, namespace, serverAddress, ctx.socket]);
 
   const disconnect = useCallback(() => {
     if (ctx.socket) {
