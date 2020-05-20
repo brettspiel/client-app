@@ -19,7 +19,7 @@ export const useSocket = (serverAddress: string, namespace?: string) => {
   const connect = useCallback(() => {
     if (!isConnected) {
       const address = namespace
-        ? `${serverAddress}/${namespace}`
+        ? `${serverAddress}${namespace}`
         : serverAddress;
       ctx.socket = io(address);
     }

@@ -17,7 +17,9 @@ app.use(cors());
 app.use(healthcheckRoute);
 app.use(usersRoute);
 
-io.on("connection", (socket) => loungeSocket(new TypedSocketEvent(socket)));
+io.of("/lounge").on("connection", (socket) =>
+  loungeSocket(new TypedSocketEvent(socket))
+);
 
 let server: Server | null = null;
 

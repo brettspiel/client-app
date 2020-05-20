@@ -4,11 +4,17 @@ import { createUser } from "../../modules/user";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { paths } from "../../paths";
+import { useServerConnection } from "../../hooks/useServerConnection";
 
 export const LoginPage: React.FunctionComponent = () => {
+  const history = useHistory();
+  const { serverId, serverAddress } = useServerConnection();
+  if (!serverId || !serverAddress) {
+    history.push(paths["/"].routingPath);
+  }
+
   const [userName, setUserName] = useState("");
   const dispatch = useDispatch();
-  const history = useHistory();
   const handleClickLogin = useCallback(async () => {
     await dispatch(createUser(userName));
     history.push(paths["/lounge"].routingPath);

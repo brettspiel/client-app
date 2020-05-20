@@ -14,7 +14,8 @@ export const Lounge: React.FunctionComponent = () => {
   const chatLogs = useReduxState((state) => state.loungeChatLog.logs);
   const [chatMessage, setChatMessage] = useState("");
   const { connect, disconnect, emit, subscribe, unsubscribe } = useSocket(
-    serverAddress
+    serverAddress,
+    "/lounge"
   );
 
   const chatLogSubscriber = useCallback(
