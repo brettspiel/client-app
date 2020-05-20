@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { Button, Input } from "semantic-ui-react";
-import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router";
 import { useDispatch } from "react-redux";
 import { registerId } from "../../modules/server";
 import { paths } from "../../paths";

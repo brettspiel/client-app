@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter, Route, Switch } from "react-router-dom";
+import { Router, Route, Switch, Redirect } from "react-router";
 import { paths } from "../../paths";
 import { TitleMenuPage } from "../TitleMenuPage";
 import { Lounge } from "../Lounge";
@@ -8,11 +8,12 @@ import { store } from "../../store";
 import styles from "./styles.module.css";
 import { SocketProvider } from "../../hooks/useSocket";
 import { LoginPage } from "../LoginPage";
+import { history } from "../../history";
 
 export const App: React.FunctionComponent = () => (
   <Provider store={store}>
     <SocketProvider>
-      <HashRouter>
+      <Router history={history}>
         <div className={styles.app}>
           <Switch>
             <Route
@@ -30,9 +31,10 @@ export const App: React.FunctionComponent = () => (
               component={Lounge}
               exact
             />
+            <Route render={() => <Redirect to={paths["/"].routingPath} />} />
           </Switch>
         </div>
-      </HashRouter>
+      </Router>
     </SocketProvider>
   </Provider>
 );

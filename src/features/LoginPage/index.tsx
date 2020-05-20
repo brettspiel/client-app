@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import { Button, Input } from "semantic-ui-react";
 import { createUser } from "../../modules/user";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router";
 import { paths } from "../../paths";
 import { useServerConnection } from "../../hooks/useServerConnection";
 

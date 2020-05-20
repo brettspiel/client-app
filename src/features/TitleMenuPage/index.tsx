@@ -3,7 +3,7 @@ import styles from "./styles.module.css";
 import { Button } from "semantic-ui-react";
 import { useDispatch } from "react-redux";
 import { registerId } from "../../modules/server";
-import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router";
 import { paths } from "../../paths";
 import { ClientSetting } from "./ClientSetting";
 import { useServerConnection } from "../../hooks/useServerConnection";
@@ -11,7 +11,7 @@ import { TitleMenuPageToLoungePageWorkflow } from "../../debug/TitleMenuPageToLo
 
 export const TitleMenuPage: React.FunctionComponent = () => {
   useEffect(() => {
-    new TitleMenuPageToLoungePageWorkflow(history).run();
+    new TitleMenuPageToLoungePageWorkflow().run();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

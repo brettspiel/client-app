@@ -1,6 +1,6 @@
 import { useReduxState } from "./useReduxState";
 import { useServerConnection } from "./useServerConnection";
-import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router";
 import { paths } from "../paths";
 import { User } from "../types/domain/User";
 
