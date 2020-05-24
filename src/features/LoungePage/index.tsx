@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "./styles.module.css";
-import { Button, Input } from "semantic-ui-react";
+import { Button, Input, Comment, Header } from "semantic-ui-react";
 import { useSocket } from "../../hooks/useSocket";
 import { ChatLog } from "../../types/domain/ChatLog";
 import { useLoggedInEffect } from "../../hooks/useLoggedInEffect";
@@ -43,11 +43,27 @@ export const LoungePage: React.FunctionComponent = () => {
   return (
     <div className={styles.lounge}>
       <h1>サーバーID: {serverId}</h1>
-      {chatLogs.map((log) => (
-        <div key={log.timestamp}>
-          [{log.user.name}] {log.message}
-        </div>
-      ))}
+      <Comment.Group>
+        <Header as="h3" dividing>
+          チャット
+        </Header>
+
+        {chatLogs.map((chatLog) => (
+          <Comment key={`${chatLog.timestamp}_${chatLog.user.id}`}>
+            <Comment.Content>
+              <Comment.Author as="span">{chatLog.user.name}</Comment.Author>
+              <Comment.Metadata>
+                <span>
+                  {new Date(chatLog.timestamp).toLocaleDateString()} -{" "}
+                  {new Date(chatLog.timestamp).toLocaleTimeString()}
+                </span>
+              </Comment.Metadata>
+              <Comment.Text>{chatLog.message}</Comment.Text>
+            </Comment.Content>
+          </Comment>
+        ))}
+      </Comment.Group>
+
       <Input
         placeholder="チャット"
         value={chatMessage}
