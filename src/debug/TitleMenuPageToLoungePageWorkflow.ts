@@ -11,6 +11,7 @@ export class TitleMenuPageToLoungePageWorkflow {
 
   run = async () => {
     if (!DEBUG_MODE) return;
+    await ipcRenderer.invoke("stopServer");
     const serverId: string = await ipcRenderer.invoke("launchServer");
 
     await this.dispatch(registerId(serverId));
