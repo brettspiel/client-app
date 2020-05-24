@@ -2,7 +2,7 @@ import React from "react";
 import { Router, Route, Switch, Redirect } from "react-router";
 import { paths } from "../../paths";
 import { TitleMenuPage } from "../TitleMenuPage";
-import { Lounge } from "../Lounge";
+import { LoungePage } from "../LoungePage";
 import { Provider } from "react-redux";
 import { store } from "../../store";
 import styles from "./styles.module.css";
@@ -28,7 +28,7 @@ export const App: React.FunctionComponent = () => (
             />
             <Route
               path={paths["/lounge"].routingPath}
-              component={Lounge}
+              component={LoungePage}
               exact
             />
             <Route render={() => <Redirect to={paths["/"].routingPath} />} />

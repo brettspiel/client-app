@@ -7,8 +7,9 @@ import { useLoggedInEffect } from "../../hooks/useLoggedInEffect";
 import { useReduxState } from "../../hooks/useReduxState";
 import { useDispatch } from "react-redux";
 import { addLog } from "../../modules/loungeChatLog";
+import { LoungePageSendChatWorkflow } from "../../debug/LoungePageSendChatWorkflow";
 
-export const Lounge: React.FunctionComponent = () => {
+export const LoungePage: React.FunctionComponent = () => {
   const { self, serverId, serverAddress } = useLoggedInEffect();
   const dispatch = useDispatch();
   const chatLogs = useReduxState((state) => state.loungeChatLog.logs);
@@ -17,6 +18,10 @@ export const Lounge: React.FunctionComponent = () => {
     serverAddress,
     "/lounge"
   );
+  useEffect(() => {
+    new LoungePageSendChatWorkflow(emit).run();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const chatLogSubscriber = useCallback(
     (chatLog: ChatLog) => {
