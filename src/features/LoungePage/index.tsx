@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "./styles.module.css";
-import { Button, Input, Comment, Header } from "semantic-ui-react";
+import { Button, Input, Comment, Header, Segment } from "semantic-ui-react";
 import { useSocket } from "../../hooks/useSocket";
 import { ChatLog } from "../../types/domain/ChatLog";
 import { useLoggedInEffect } from "../../hooks/useLoggedInEffect";
@@ -42,7 +42,13 @@ export const LoungePage: React.FunctionComponent = () => {
 
   return (
     <div className={styles.lounge}>
-      <h1>サーバーID: {serverId}</h1>
+      <Header as="h1">サーバーID: {serverId}</Header>
+
+      <Header as="h3">ゲームを始める</Header>
+      <Segment>
+        <div>マルバツゲーム</div>
+      </Segment>
+
       <Comment.Group>
         <Header as="h3" dividing>
           チャット
