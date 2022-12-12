@@ -40,7 +40,7 @@
     "electron-devtools-installer": "^2.2.4",
     "electron-is-dev": "^1.1.0",
     "electron-reload": "^1.5.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "extensible-custom-error": "^0.0.7",
     "history": "^4.10.1",
     "internal-ip": "^6.0.0",
